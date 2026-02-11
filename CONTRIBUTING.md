@@ -82,6 +82,8 @@ When adding a new agent to `agents/`, evaluate:
 | `@jira` | Jira ticket management, asks for project key | `atlassian_*: true` |
 | `@docs` | Confluence search, cites sources with links | `atlassian_*: true` |
 | `@security` | OWASP-focused review, severity ratings, provides fixes | None |
+| `@design-ousterhout` | Code review through Ousterhout's *A Philosophy of Software Design* | None |
+| `@testing-khorikov` | Test writing/review using Khorikov's unit testing principles | None |
 
 ---
 
