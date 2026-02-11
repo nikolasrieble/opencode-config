@@ -12,20 +12,25 @@
   // ---------------------------------------------------------------------------
   // Model Configuration - GitHub Copilot
   // ---------------------------------------------------------------------------
-  "model": "github-copilot/claude-opus-4-6",
-  // Using gpt-5-mini for lightweight tasks (title generation, etc.) - 0x multiplier = completely free
+  "model": "github-copilot/claude-opus-4.6",
+  // Using gpt-5-mini for lightweight tasks (title generation, etc.) - currently free via GitHub Copilot
   "small_model": "github-copilot/gpt-5-mini",
 
   // ---------------------------------------------------------------------------
   // Atlassian MCP Server (Jira + Confluence)
   // Uses OAuth - will prompt for authentication on first use
-  // Supports: https://hashicorp.atlassian.net/
+  // Supports: https://<YOUR_ATLASSIAN_INSTANCE>.atlassian.net/
   // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  // Plugins
+  // ---------------------------------------------------------------------------
+  "plugin": ["@mohak34/opencode-notifier"],
+
   "mcp": {
     "atlassian": {
       "type": "remote",
       "url": "https://mcp.atlassian.com/v1/sse",
-      "enabled": false,
+      "enabled": true,
       "oauth": {}
     }
   },
