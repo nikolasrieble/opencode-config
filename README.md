@@ -1,6 +1,6 @@
-# OpenCode Company Configuration
+# OpenCode Config
 
-Recommended OpenCode configuration for all engineers.
+Opinionated, shared OpenCode configuration for engineering teams.
 
 ## Why?
 
@@ -21,64 +21,18 @@ This is **not** a place for team-specific or project-specific configuration. Tho
 
 ## Installation
 
-### Option 1: Symlink (Recommended for contributors)
-
-If you want changes to the repo reflected immediately:
-
 ```bash
-# Clone the repo (replace with your fork URL if applicable)
-git clone <repo-url> ~/code/opencode-company-config
+# Clone the repo
+git clone <repo-url> ~/code/opencode-config
 
 # Backup existing config (if any)
 cp ~/.config/opencode/opencode.json ~/.config/opencode/opencode.json.bak 2>/dev/null
+cp -r ~/.config/opencode/agents ~/.config/opencode/agents.bak 2>/dev/null
 
-# Symlink agents folder
+# Symlink config and agents
 mkdir -p ~/.config/opencode
-rm -rf ~/.config/opencode/agents
-ln -s ~/code/opencode-company-config/agents ~/.config/opencode/agents
-
-# Symlink the main config (or cp if you want a local copy to customize)
-ln -sf ~/code/opencode-company-config/opencode.json ~/.config/opencode/opencode.json
-```
-
-### Option 2: Copy (Simple install)
-
-```bash
-# Clone the repo
-git clone <repo-url>
-cd opencode-company-config
-
-# Copy everything
-mkdir -p ~/.config/opencode/agents
-cp opencode.json ~/.config/opencode/
-cp agents/*.md ~/.config/opencode/agents/
-```
-
-### Option 3: Direct download
-
-```bash
-mkdir -p ~/.config/opencode/agents
-
-# Set your repo's raw URL base (adjust org/repo as needed)
-RAW_BASE="https://raw.githubusercontent.com/<owner>/opencode-company-config/main"
-
-# Download config
-curl -o ~/.config/opencode/opencode.json "$RAW_BASE/opencode.json"
-
-# Download agents
-curl -o ~/.config/opencode/agents/jira.md "$RAW_BASE/agents/jira.md"
-curl -o ~/.config/opencode/agents/docs.md "$RAW_BASE/agents/docs.md"
-curl -o ~/.config/opencode/agents/security.md "$RAW_BASE/agents/security.md"
-```
-
-## Verify Installation
-
-```bash
-# Check config exists
-cat ~/.config/opencode/opencode.json
-
-# Check agents are available
-ls -la ~/.config/opencode/agents/
+ln -sf ~/code/opencode-config/opencode.json ~/.config/opencode/opencode.json
+ln -sfn ~/code/opencode-config/agents ~/.config/opencode/agents
 ```
 
 Restart OpenCode to pick up the changes.
@@ -178,14 +132,9 @@ Example project `opencode.json`:
 
 ## Updating
 
-If you used the symlink approach:
-
 ```bash
-cd ~/code/opencode-company-config
-git pull
+cd ~/code/opencode-config && git pull
 ```
-
-If you copied the files, re-run the copy commands after pulling.
 
 ---
 
