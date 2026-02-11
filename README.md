@@ -73,6 +73,17 @@ Can you @security review this authentication code?
 
 The main agent will invoke the security agent as a subagent, then continue the conversation.
 
+### Available Agents
+
+| Agent | Description | MCP tools |
+|-------|-------------|-----------|
+| `build` (default) | General coding assistance | None (Atlassian disabled) |
+| `@jira` | Jira ticket management, asks for project key | `atlassian_*: true` |
+| `@docs` | Confluence search, cites sources with links | `atlassian_*: true` |
+| `@security` | OWASP-focused review, severity ratings, provides fixes | None |
+| `@design-ousterhout` | Code review through Ousterhout's *A Philosophy of Software Design* | None |
+| `@testing-khorikov` | Test writing/review using Khorikov's unit testing principles | None |
+
 ### Atlassian Tools
 
 Atlassian tools are **disabled by default** to save context. The included agents (`jira`, `docs`) automatically enable the tools they need.

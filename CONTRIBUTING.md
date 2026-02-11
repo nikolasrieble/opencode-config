@@ -76,14 +76,7 @@ When adding a new agent to `agents/`, evaluate:
 
 ### Agent behavior reference
 
-| Agent | Expected behavior | MCP tools |
-|-------|-------------------|-----------|
-| `build` (default) | General coding assistance | None (Atlassian disabled) |
-| `@jira` | Jira ticket management, asks for project key | `atlassian_*: true` |
-| `@docs` | Confluence search, cites sources with links | `atlassian_*: true` |
-| `@security` | OWASP-focused review, severity ratings, provides fixes | None |
-| `@design-ousterhout` | Code review through Ousterhout's *A Philosophy of Software Design* | None |
-| `@testing-khorikov` | Test writing/review using Khorikov's unit testing principles | None |
+Update the **Available Agents** table in README.md when adding or renaming agents.
 
 ---
 
