@@ -23,7 +23,7 @@ This is **not** a place for team-specific or project-specific configuration. Tho
 
 ```bash
 # Clone the repo
-git clone <repo-url> ~/code/opencode-config
+git clone git@github.com:nikolasrieble/opencode-config.git
 
 # Backup existing config (if any)
 cp ~/.config/opencode/opencode.json ~/.config/opencode/opencode.json.bak 2>/dev/null
@@ -31,9 +31,11 @@ cp -r ~/.config/opencode/agents ~/.config/opencode/agents.bak 2>/dev/null
 
 # Symlink config and agents
 mkdir -p ~/.config/opencode
-ln -sf ~/code/opencode-config/opencode.json ~/.config/opencode/opencode.json
-ln -sfn ~/code/opencode-config/agents ~/.config/opencode/agents
+ln -sf <REPO_DIR>/opencode.json ~/.config/opencode/opencode.json
+ln -sfn <REPO_DIR>/agents ~/.config/opencode/agents
 ```
+
+Replace `<REPO_DIR>` with the absolute path where you cloned the repo.
 
 Restart OpenCode to pick up the changes.
 
@@ -132,8 +134,10 @@ Example project `opencode.json`:
 
 ## Updating
 
+Pull the latest changes from wherever you cloned the repo:
+
 ```bash
-cd ~/code/opencode-config && git pull
+git pull
 ```
 
 ---
