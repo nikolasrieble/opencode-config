@@ -1,0 +1,63 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // =============================================================================
+  // Company-Wide OpenCode Configuration
+  // =============================================================================
+  // Install:
+  //   1. Copy opencode.json → ~/.config/opencode/opencode.json
+  //   2. Copy agents/       → ~/.config/opencode/agents/
+  // =============================================================================
+
+  // ---------------------------------------------------------------------------
+  // Model Configuration - GitHub Copilot
+  // ---------------------------------------------------------------------------
+  "model": "github-copilot/claude-opus-4-6",
+  // Using gpt-5-mini for lightweight tasks (title generation, etc.) - 0x multiplier = completely free
+  "small_model": "github-copilot/gpt-5-mini",
+
+  // ---------------------------------------------------------------------------
+  // Atlassian MCP Server (Jira + Confluence)
+  // Uses OAuth - will prompt for authentication on first use
+  // Supports: https://hashicorp.atlassian.net/
+  // ---------------------------------------------------------------------------
+  "mcp": {
+    "atlassian": {
+      "type": "remote",
+      "url": "https://mcp.atlassian.com/v1/sse",
+      "enabled": false,
+      "oauth": {}
+    }
+  },
+
+  // Disable Atlassian tools globally (agents re-enable as needed)
+  "tools": {
+    "atlassian_*": false
+  },
+
+  // ---------------------------------------------------------------------------
+  // Agents are defined in the agents/ folder
+  // Copy agents/*.md to ~/.config/opencode/agents/
+  // ---------------------------------------------------------------------------
+
+  // ---------------------------------------------------------------------------
+  // Personal Preferences (engineers can customize these)
+  // ---------------------------------------------------------------------------
+  "theme": "catppuccin",
+  "autoupdate": true,
+
+  "tui": {
+    "scroll_acceleration": {
+      "enabled": true
+    },
+    "diff_style": "auto"
+  },
+
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 10000
+  },
+
+  "share": "manual"
+}
