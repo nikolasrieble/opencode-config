@@ -58,6 +58,14 @@ OpenCode ships several CLI tools useful for manual evaluation:
 
 ## Adding an Agent
 
+### Context-gate agents
+
+Some agents exist primarily to **isolate expensive tool definitions from the default context**. The `@jira` and `@docs` agents are examples: they re-enable `atlassian_*` tools via frontmatter so those tool definitions only enter the context window when the agent is explicitly invoked. Without these agents, enabling Atlassian tools globally would inflate the baseline token cost for every session — even ones that never touch Jira or Confluence.
+
+When creating an agent that wraps MCP tools, the prompt itself matters less than the frontmatter gating. The agent's primary value is architectural: it keeps the default agent lean. The prompt is a secondary benefit that guides usage once the tools are available.
+
+### Evaluation checklist
+
 When adding a new agent to `agents/`, evaluate:
 
 1. **Does it need MCP tools?** If yes, enable only the specific tools it needs via frontmatter (`tools: { some_*: true }`). Never enable tools globally for one agent's benefit.
