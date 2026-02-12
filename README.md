@@ -83,6 +83,7 @@ The main agent will invoke the security agent as a subagent, then continue the c
 | `@security` | OWASP-focused review, severity ratings, provides fixes | None |
 | `@design-ousterhout` | Code review through Ousterhout's *A Philosophy of Software Design* | None |
 | `@testing-khorikov` | Test writing/review using Khorikov's unit testing principles | None |
+| `@human-review` | PR seam analysis and summary evaluation for reviewability | None |
 
 ### Atlassian Tools
 
