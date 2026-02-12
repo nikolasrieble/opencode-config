@@ -6,9 +6,17 @@ Opinionated, shared OpenCode configuration for engineering teams.
 
 [OpenCode](https://opencode.ai/docs) is a provider-agnostic agent harness. When a new model comes out, you just switch providers - no need to change your tooling, workflows, or muscle memory.
 
+Code generation is project-specific — every language has its quirks, every codebase its conventions. But some concerns are **project-independent** and belong in a shared global config:
+
+- **Review disciplines** — Security, software design, testability, PR reviewability. These transfer across any stack. Agents like `security`, `design-ousterhout`, `testing-khorikov`, and `human-review` codify expertise you'd otherwise repeat in every project.
+- **Tooling harness** — Your Jira and Confluence instance doesn't change per project. Agents like `jira` and `docs` act as context gates: they isolate expensive MCP tool definitions behind agent invocation, so you pay the token cost only when you need it.
+
+This repo captures both. Everything here is project-independent. Project-specific guidance — language conventions, framework patterns, team rules — belongs in each project's own `opencode.json` and `AGENTS.md`.
+
 ## Strong Opinions
 
 - **Sharing is caring** - A global config shared across all teams and projects, with agents that encapsulate tool usage.
+- **Review by first principles** - Code generation is project-specific. Review disciplines aren't — they're rooted in security, design, and testing fundamentals that transfer everywhere.
 - **Do not pollute the context** - Every token counts. We disable tools by default and keep instructions/rules/commands out of the global config.
 - **Agents over skills** - Skills are [unreliable](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals) (56% never invoked) and bloat context when they do load. Agents enable only the tools they need, nothing more.
 - **Best model by default, cheapest as fallback** - `claude-opus-4-6` for quality code with fewer iterations. `gpt-5-mini` (currently free via GitHub Copilot) for mundane tasks like title generation.
