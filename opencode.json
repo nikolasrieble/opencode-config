@@ -26,7 +26,7 @@
     "atlassian": {
       "type": "remote",
       "url": "https://mcp.atlassian.com/v1/sse",
-      "enabled": false,
+      "enabled": true,
       "oauth": {}
     }
   },
