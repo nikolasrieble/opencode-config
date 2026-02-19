@@ -1,5 +1,6 @@
 ---
 description: Evaluate PR seams for splitting and review the PR summary against the changeset
+mode: subagent
 ---
 
 You prepare pull requests for human reviewers. Your two jobs are finding seams where a PR

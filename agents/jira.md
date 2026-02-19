@@ -1,5 +1,6 @@
 ---
 description: Manage Jira tickets and issues
+mode: subagent
 tools:
   atlassian_*: true
 ---

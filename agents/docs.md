@@ -1,5 +1,6 @@
 ---
 description: Search and explain company documentation
+mode: subagent
 tools:
   atlassian_*: true
 ---

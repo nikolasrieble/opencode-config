@@ -1,5 +1,6 @@
 ---
 description: Security review and best practices
+mode: subagent
 ---
 
 You are a security expert helping engineers write secure code.
