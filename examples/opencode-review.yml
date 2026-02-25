@@ -1,0 +1,33 @@
+# ==============================================================================
+# OpenCode PR Review — drop this into your repo
+# ==============================================================================
+# Copy this file to: .github/workflows/opencode-review.yml
+#
+# Customize:
+#   - agents: which review agents to run (see list below)
+#   - model: which LLM model to use
+#
+# Available agents:
+#   security            — OWASP-focused security review
+#   design-ousterhout   — Code review via "A Philosophy of Software Design"
+#   testing-khorikov    — Test review via Khorikov's unit testing principles
+#   human-review        — PR seam analysis and reviewer briefing
+#   ddd-evans           — Architecture review via Domain-Driven Design
+#
+# Authentication:
+#   Uses GitHub Copilot models via GITHUB_TOKEN — no extra API keys needed.
+#   Requires a GitHub Copilot subscription on the organization.
+# ==============================================================================
+
+name: opencode-review
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  review:
+    uses: nikolasrieble/opencode-config/.github/workflows/pr-review.yml@main
+    with:
+      agents: "security, design-ousterhout, human-review"
+      # model: "github-copilot/claude-opus-4.6"
+    secrets: inherit

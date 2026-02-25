@@ -1,0 +1,75 @@
+name: PR Review
+
+on:
+  workflow_call:
+    inputs:
+      agents:
+        description: >
+          Comma-separated list of sub-agents to run.
+          Available: security, design-ousterhout, testing-khorikov, human-review, ddd-evans.
+          Default: security, design-ousterhout, human-review
+        required: false
+        type: string
+        default: "security, design-ousterhout, human-review"
+      model:
+        description: "Model to use (provider/model format)"
+        required: false
+        type: string
+        default: "github-copilot/claude-opus-4.6"
+      config-repo:
+        description: "Repository containing agent definitions (org/repo format)"
+        required: false
+        type: string
+        default: "nikolasrieble/opencode-config"
+      config-ref:
+        description: "Branch or tag of the config repo to use"
+        required: false
+        type: string
+        default: "main"
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Checkout agent config
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.config-repo }}
+          ref: ${{ inputs.config-ref }}
+          path: .opencode-config
+          persist-credentials: false
+
+      - name: Install agents
+        run: |
+          # Merge config-repo agents into the project's .opencode/agents/
+          mkdir -p .opencode/agents
+          cp .opencode-config/agents/*.md .opencode/agents/
+
+          # If the project doesn't have an opencode.json, use the shared one
+          if [ ! -f opencode.json ]; then
+            cp .opencode-config/opencode.json opencode.json
+          fi
+
+      - name: Run PR Review
+        uses: anomalyco/opencode/github@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          model: ${{ inputs.model }}
+          agent: pr-review
+          use_github_token: true
+          prompt: |
+            Review this pull request by delegating to the following sub-agents: ${{ inputs.agents }}.
+
+            For each sub-agent, use the Task tool to invoke it with the PR diff and context.
+            Aggregate all findings into a single consolidated review comment.
