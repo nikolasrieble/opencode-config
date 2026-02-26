@@ -25,12 +25,17 @@ on:
         required: false
         type: string
         default: "main"
+      pr-number:
+        description: "PR number to review (required for issue_comment triggers)"
+        required: false
+        type: string
+        default: ""
 
 jobs:
   review:
     runs-on: ubuntu-latest
     concurrency:
-      group: pr-review-${{ github.event.pull_request.number || github.ref }}
+      group: pr-review-${{ inputs.pr-number || github.event.pull_request.number || github.ref }}
       cancel-in-progress: true
     permissions:
       contents: read
@@ -74,20 +79,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INPUT_AGENTS: ${{ inputs.agents }}
+          PR_NUMBER: ${{ inputs.pr-number || github.event.pull_request.number }}
         run: |
           opencode run \
             --agent pr-review \
             --model "${{ inputs.model }}" \
-            "PR #${{ github.event.pull_request.number }}. Sub-agents: $INPUT_AGENTS." \
+            "PR #$PR_NUMBER. Sub-agents: $INPUT_AGENTS." \
             > /tmp/review.md
 
-          gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/review.md
+          gh pr comment "$PR_NUMBER" --body-file /tmp/review.md
 
       - name: Comment on failure
         if: failure()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ inputs.pr-number || github.event.pull_request.number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          gh pr comment "${{ github.event.pull_request.number }}" \
+          gh pr comment "$PR_NUMBER" \
             --body "**PR Review failed.** See [workflow logs]($RUN_URL) for details."
