@@ -219,9 +219,13 @@ That's it. Reviewers get a structured brief on every PR — security findings, d
 
 ### Authentication
 
-Uses GitHub Copilot models via `GITHUB_TOKEN` — no extra API keys or secrets needed. Requires a [GitHub Copilot subscription](https://github.com/features/copilot/plans) on the organization.
+Requires a [GitHub Copilot subscription](https://github.com/features/copilot/plans) on the organization and an org-level secret named `COPILOT_TOKEN`:
 
-The workflow only requests `contents: read` and `pull-requests: write` permissions. It uses the `opencode` CLI directly (not the GitHub Action) so it works on any event type.
+1. Create a **service account** (machine user) and assign it a Copilot seat
+2. Generate a **fine-grained PAT** on that account with the **"Copilot Requests"** permission only
+3. Store the PAT as an **org-level secret** named `COPILOT_TOKEN`
+
+Consumer workflows pass the secret via `secrets: inherit`. The workflow uses `COPILOT_TOKEN` for model access and `GITHUB_TOKEN` for posting PR comments.
 
 ### Operational Notes
 

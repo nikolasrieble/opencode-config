@@ -25,6 +25,10 @@ on:
         required: false
         type: string
         default: "main"
+    secrets:
+      COPILOT_TOKEN:
+        description: "Fine-grained PAT with 'Copilot Requests' permission (org-level secret)"
+        required: true
 
 jobs:
   review:
@@ -33,9 +37,10 @@ jobs:
       group: pr-review-${{ github.event.issue.number || github.event.pull_request.number || github.ref }}
       cancel-in-progress: true
     permissions:
-      id-token: write
       contents: read
       pull-requests: write
+    env:
+      PR_NUMBER: ${{ github.event.issue.number || github.event.pull_request.number }}
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
@@ -63,11 +68,33 @@ jobs:
             cp .opencode-config/opencode.json opencode.json
           fi
 
+      - name: Install opencode
+        run: |
+          curl -fsSL https://opencode.ai/install | bash -s -- --version 1.2.15
+          echo "$HOME/.opencode/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.opencode/bin:$PATH"
+          opencode --version
+
       - name: Run review
-        uses: anomalyco/opencode/github@latest
+        id: review
+        env:
+          GITHUB_TOKEN: ${{ secrets.COPILOT_TOKEN }}
+          INPUT_AGENTS: ${{ inputs.agents }}
+        run: |
+          opencode run \
+            --agent pr-review \
+            --model "${{ inputs.model }}" \
+            "PR #$PR_NUMBER. Sub-agents: $INPUT_AGENTS." \
+            > /tmp/review.md
+
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+            gh pr comment "$PR_NUMBER" --body-file /tmp/review.md
+
+      - name: Comment on failure
+        if: failure()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          model: ${{ inputs.model }}
-          agent: pr-review
-          prompt: "PR #${{ github.event.issue.number || github.event.pull_request.number }}. Sub-agents: ${{ inputs.agents }}."
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh pr comment "$PR_NUMBER" \
+            --body "**PR Review failed.** See [workflow logs]($RUN_URL) for details."
