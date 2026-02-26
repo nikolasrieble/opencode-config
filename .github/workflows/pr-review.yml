@@ -5,9 +5,8 @@ on:
     inputs:
       agents:
         description: >
-          Comma-separated list of sub-agents to run.
-          Available: security, design-ousterhout, testing-khorikov, human-review, ddd-evans.
-          Default: security, design-ousterhout, human-review
+          Comma-separated list of sub-agents to run (see agents/ directory for
+          available options). Default: security, design-ousterhout, human-review
         required: false
         type: string
         default: "security, design-ousterhout, human-review"
@@ -30,11 +29,12 @@ on:
 jobs:
   review:
     runs-on: ubuntu-latest
+    concurrency:
+      group: pr-review-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
     permissions:
-      id-token: write
       contents: read
       pull-requests: write
-      issues: write
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
@@ -51,25 +51,43 @@ jobs:
 
       - name: Install agents
         run: |
-          # Merge config-repo agents into the project's .opencode/agents/
           mkdir -p .opencode/agents
-          cp .opencode-config/agents/*.md .opencode/agents/
-
-          # If the project doesn't have an opencode.json, use the shared one
+          for f in .opencode-config/agents/*.md; do
+            name="$(basename "$f")"
+            if [ ! -f ".opencode/agents/$name" ]; then
+              cp "$f" ".opencode/agents/$name"
+            fi
+          done
           if [ ! -f opencode.json ]; then
             cp .opencode-config/opencode.json opencode.json
           fi
 
-      - name: Run PR Review
-        uses: anomalyco/opencode/github@latest
+      - name: Install opencode
+        run: |
+          curl -fsSL https://opencode.ai/install | bash
+          echo "$HOME/.opencode/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.opencode/bin:$PATH"
+          opencode --version
+
+      - name: Run review
+        id: review
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          model: ${{ inputs.model }}
-          agent: pr-review
-          use_github_token: true
-          prompt: |
-            Review this pull request by delegating to the following sub-agents: ${{ inputs.agents }}.
+          INPUT_AGENTS: ${{ inputs.agents }}
+        run: |
+          opencode run \
+            --agent pr-review \
+            --model "${{ inputs.model }}" \
+            "PR #${{ github.event.pull_request.number }}. Sub-agents: $INPUT_AGENTS." \
+            > /tmp/review.md
 
-            For each sub-agent, use the Task tool to invoke it with the PR diff and context.
-            Aggregate all findings into a single consolidated review comment.
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/review.md
+
+      - name: Comment on failure
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh pr comment "${{ github.event.pull_request.number }}" \
+            --body "**PR Review failed.** See [workflow logs]($RUN_URL) for details."

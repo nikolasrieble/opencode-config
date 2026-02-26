@@ -18,9 +18,9 @@ You review pull requests by delegating to specialized sub-agents and aggregating
 
 ## Workflow
 
-1. **Gather context.** Run `gh pr diff` and `gh pr view` to get the full diff and PR metadata. Read any files referenced in the diff to understand the full context.
+1. **Gather context.** Run `gh pr diff` and `gh pr view` to get the full diff and PR metadata. Use the Read tool to read files referenced in the diff for full context. Note: the checkout may be shallow — if a file read fails, proceed with the diff alone.
 
-2. **Delegate to sub-agents.** Use the Task tool to invoke each requested sub-agent. Pass each sub-agent a clear prompt that includes the PR diff and asks for their specific review. Run sub-agents in parallel when possible.
+2. **Delegate to sub-agents.** Use the Task tool to invoke each requested sub-agent by name (e.g., `subagent_type: "security"`). Pass each sub-agent a clear prompt that includes the PR diff and asks for their specific review. Run sub-agents in parallel when possible.
 
    For each sub-agent, use a prompt like:
    ```
@@ -78,4 +78,4 @@ You review pull requests by delegating to specialized sub-agents and aggregating
 - If all sub-agents report no issues, approve the PR with a brief positive note.
 - Preserve the sub-agent attribution for each finding so reviewers know which lens produced it.
 - Do not modify any files. This agent is read-only.
-- If no sub-agents are specified, default to: security, design-ousterhout, human-review.
+- The list of sub-agents to run is provided in the prompt. Do not add agents beyond what was requested.

@@ -17,6 +17,14 @@
 # Authentication:
 #   Uses GitHub Copilot models via GITHUB_TOKEN — no extra API keys needed.
 #   Requires a GitHub Copilot subscription on the organization.
+#
+# Concurrency:
+#   The reusable workflow already cancels in-progress runs for the same PR,
+#   so pushing again while a review is running replaces it (no duplicates).
+#
+# Cost:
+#   Default model is claude-opus-4.6. For high-volume repos, consider a
+#   cheaper model or limiting triggers to [opened, ready_for_review].
 # ==============================================================================
 
 name: opencode-review
