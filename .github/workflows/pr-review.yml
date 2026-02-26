@@ -1,0 +1,93 @@
+name: PR Review
+
+on:
+  workflow_call:
+    inputs:
+      agents:
+        description: >
+          Comma-separated list of sub-agents to run (see agents/ directory for
+          available options). Default: security, design-ousterhout, human-review
+        required: false
+        type: string
+        default: "security, design-ousterhout, human-review"
+      model:
+        description: "Model to use (provider/model format)"
+        required: false
+        type: string
+        default: "github-copilot/claude-opus-4.6"
+      config-repo:
+        description: "Repository containing agent definitions (org/repo format)"
+        required: false
+        type: string
+        default: "nikolasrieble/opencode-config"
+      config-ref:
+        description: "Branch or tag of the config repo to use"
+        required: false
+        type: string
+        default: "main"
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pr-review-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Checkout agent config
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.config-repo }}
+          ref: ${{ inputs.config-ref }}
+          path: .opencode-config
+          persist-credentials: false
+
+      - name: Install agents
+        run: |
+          mkdir -p .opencode/agents
+          for f in .opencode-config/agents/*.md; do
+            name="$(basename "$f")"
+            if [ ! -f ".opencode/agents/$name" ]; then
+              cp "$f" ".opencode/agents/$name"
+            fi
+          done
+          if [ ! -f opencode.json ]; then
+            cp .opencode-config/opencode.json opencode.json
+          fi
+
+      - name: Install opencode
+        run: |
+          curl -fsSL https://opencode.ai/install | bash -s -- --version 1.2.15
+          echo "$HOME/.opencode/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.opencode/bin:$PATH"
+          opencode --version
+
+      - name: Run review
+        id: review
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_AGENTS: ${{ inputs.agents }}
+        run: |
+          opencode run \
+            --agent pr-review \
+            --model "${{ inputs.model }}" \
+            "PR #${{ github.event.pull_request.number }}. Sub-agents: $INPUT_AGENTS." \
+            > /tmp/review.md
+
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/review.md
+
+      - name: Comment on failure
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh pr comment "${{ github.event.pull_request.number }}" \
+            --body "**PR Review failed.** See [workflow logs]($RUN_URL) for details."

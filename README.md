@@ -92,6 +92,8 @@ The main agent will invoke the security agent as a subagent, then continue the c
 | `@design-ousterhout` | Code review through Ousterhout's *A Philosophy of Software Design* | None |
 | `@testing-khorikov` | Test writing/review using Khorikov's unit testing principles | None |
 | `@human-review` | PR seam analysis and summary evaluation for reviewability | None |
+| `@ddd-evans` | Architecture review through Eric Evans' Domain-Driven Design | None |
+| `@pr-review` | **Orchestrator** — delegates to sub-agents, aggregates findings | None |
 
 ### Atlassian Tools
 
@@ -158,6 +160,90 @@ Pull the latest changes from wherever you cloned the repo:
 
 ```bash
 git pull
+```
+
+## Automated PR Review
+
+PRs are getting bigger and landing faster. Reviewers need help keeping up — especially on security, design, and testability, where issues are easy to miss under time pressure.
+
+This repo includes a **reusable GitHub Actions workflow** that reviews every PR through specialized lenses and posts a single consolidated comment. Reviewers get a structured brief before they start reading code.
+
+### How It Works
+
+```
+PR opened → Reusable workflow triggers
+         → Checks out your repo + this config repo
+         → Runs the pr-review orchestrator agent
+         → Orchestrator delegates to sub-agents (security, design, etc.)
+         → Sub-agents analyze the diff from their area of expertise
+         → Orchestrator aggregates findings by severity
+         → Posts a single review comment on the PR
+```
+
+### Adopting in Your Repo
+
+Copy [`examples/opencode-review.yml`](examples/opencode-review.yml) to `.github/workflows/opencode-review.yml` in your repo, or create a minimal version:
+
+```yaml
+name: opencode-review
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  review:
+    uses: nikolasrieble/opencode-config/.github/workflows/pr-review.yml@main
+    secrets: inherit
+```
+
+That's it. Reviewers get a structured brief on every PR — security findings, design concerns, and risk areas — before they start reading code.
+
+### Configuration
+
+| Input | Default | Description |
+|-------|---------|-------------|
+| `agents` | `security, design-ousterhout, human-review` | Comma-separated list of sub-agents to run |
+| `model` | `github-copilot/claude-opus-4.6` | LLM model to use |
+| `config-repo` | `nikolasrieble/opencode-config` | Repo containing agent definitions |
+| `config-ref` | `main` | Branch/tag of the config repo |
+
+### Available Review Agents
+
+| Agent | Focus |
+|-------|-------|
+| `security` | OWASP Top 10, secrets, input validation, auth |
+| `design-ousterhout` | Complexity, shallow modules, information leakage |
+| `testing-khorikov` | Test quality, observable behavior, quadrant classification |
+| `human-review` | PR seams for splitting, reviewer briefing, risk analysis |
+| `ddd-evans` | Bounded contexts, ubiquitous language, aggregate boundaries |
+
+### Authentication
+
+Uses GitHub Copilot models via `GITHUB_TOKEN` — no extra API keys or secrets needed. Requires a [GitHub Copilot subscription](https://github.com/features/copilot/plans) on the organization.
+
+The workflow only requests `contents: read` and `pull-requests: write` permissions. It uses the `opencode` CLI directly (not the GitHub Action) so it works on any event type.
+
+### Operational Notes
+
+- **Concurrency:** The workflow cancels in-progress runs for the same PR. If you push while a review is running, the old run is cancelled and a new one starts. This prevents duplicate comments.
+- **Cost:** The default model is `claude-opus-4.6`, which runs on every PR event (`opened`, `synchronize`, `reopened`, `ready_for_review`). For high-volume repos, consider using a cheaper model or limiting triggers to `opened` and `ready_for_review`.
+- **No clobbering:** If your project already has an agent with the same name as a shared agent (e.g., `.opencode/agents/security.md`), the project-level version takes precedence.
+- **Errors:** If the review fails, the workflow check fails. If you prefer non-blocking reviews, add `continue-on-error: true` to the review job in your consumer workflow.
+
+### Examples
+
+See [`examples/opencode-review.yml`](examples/opencode-review.yml) for a full, commented example you can drop into your repo.
+
+**Custom agent selection:**
+
+```yaml
+jobs:
+  review:
+    uses: nikolasrieble/opencode-config/.github/workflows/pr-review.yml@main
+    with:
+      agents: "security, ddd-evans, testing-khorikov"
+      model: "github-copilot/claude-sonnet-4"
+    secrets: inherit
 ```
 
 ---
