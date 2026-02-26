@@ -64,7 +64,7 @@ jobs:
 
       - name: Install opencode
         run: |
-          curl -fsSL https://opencode.ai/install | bash
+          curl -fsSL https://opencode.ai/install | bash -s -- --version 1.2.15
           echo "$HOME/.opencode/bin" >> "$GITHUB_PATH"
           export PATH="$HOME/.opencode/bin:$PATH"
           opencode --version
