@@ -1,7 +1,7 @@
 # ==============================================================================
 # OpenCode PR Review — drop this into your repo
 # ==============================================================================
-# Copy this file to: .github/workflows/opencode-review.yml
+# Comment "/review" on any PR to trigger an automated review.
 #
 # Customize:
 #   - agents: which review agents to run (see list below)
@@ -15,25 +15,39 @@
 #   ddd-evans           — Architecture review via Domain-Driven Design
 #
 # Authentication:
-#   Uses GitHub Copilot models via GITHUB_TOKEN — no extra API keys needed.
+#   Uses OpenCode's OIDC token exchange — no API keys or PATs needed.
 #   Requires a GitHub Copilot subscription on the organization.
 #
 # Concurrency:
 #   The reusable workflow already cancels in-progress runs for the same PR,
-#   so pushing again while a review is running replaces it (no duplicates).
+#   so triggering again while a review is running replaces it (no duplicates).
 #
 # Cost:
 #   Default model is claude-opus-4.6. For high-volume repos, consider a
-#   cheaper model or limiting triggers to [opened, ready_for_review].
+#   cheaper model.
+#
+# To switch to automatic reviews on every PR, change the trigger to:
+#   on:
+#     pull_request:
+#       types: [opened, synchronize, reopened, ready_for_review]
+# and remove the if: condition on the job.
 # ==============================================================================
 
 name: opencode-review
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+  issue_comment:
+    types: [created]
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
 
 jobs:
   review:
+    if: >
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '/review')
     uses: nikolasrieble/opencode-config/.github/workflows/pr-review.yml@main
     with:
       agents: "security, design-ousterhout, human-review"
