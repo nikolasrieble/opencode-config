@@ -14,17 +14,18 @@
 #   human-review        — PR seam analysis and reviewer briefing
 #   ddd-evans           — Architecture review via Domain-Driven Design
 #
-# Authentication:
-#   Uses OpenCode's OIDC token exchange — no API keys or PATs needed.
-#   Requires a GitHub Copilot subscription on the organization.
+# Prerequisites:
+#   1. A service account with a GitHub Copilot seat
+#   2. A fine-grained PAT on that account with "Copilot Requests" permission
+#   3. The PAT stored as an org-level secret named COPILOT_TOKEN
 #
 # Concurrency:
-#   The reusable workflow already cancels in-progress runs for the same PR,
-#   so triggering again while a review is running replaces it (no duplicates).
+#   The reusable workflow cancels in-progress runs for the same PR,
+#   so triggering again while a review is running replaces it.
 #
 # Cost:
-#   Default model is claude-opus-4.6. For high-volume repos, consider a
-#   cheaper model.
+#   Default model is claude-opus-4.6. Consider a cheaper model for
+#   high-volume repos.
 #
 # To switch to automatic reviews on every PR, change the trigger to:
 #   on:
@@ -39,7 +40,6 @@ on:
     types: [created]
 
 permissions:
-  id-token: write
   contents: read
   pull-requests: write
 
