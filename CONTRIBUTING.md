@@ -94,7 +94,7 @@ Some changes can disrupt every engineer using this config. Take extra care with:
 
 | Change type | Risk | Mitigation |
 |---|---|---|
-| Removing an agent | Engineers may reference it in workflows | Deprecate first: add a note to the agent prompt, then remove after a cycle |
+| Removing an agent | Engineers may reference it by name | Deprecate first: add a note to the agent prompt, then remove after a cycle |
 | Changing `model` or `small_model` | Different behavior, cost, capability | Test thoroughly; announce in team channel |
 | Enabling tools globally | Inflates baseline for everyone | Almost always wrong — use per-agent frontmatter instead |
 | Changing compaction settings | Affects long session behavior | Test with a long session before pushing |
