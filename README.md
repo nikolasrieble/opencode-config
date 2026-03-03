@@ -93,16 +93,19 @@ The main agent will invoke the security agent as a subagent, then continue the c
 | `@testing-khorikov` | Test writing/review using Khorikov's unit testing principles | None |
 | `@human-review` | PR seam analysis and summary evaluation for reviewability | None |
 | `@ddd-evans` | Architecture review through Eric Evans' Domain-Driven Design | None |
-### Atlassian Tools
+| `@playwright` | Browser automation — navigate, click, fill forms, take snapshots | `playwright_*: true` |
 
-Atlassian tools are **disabled by default** to save context. The included agents (`jira`, `docs`) automatically enable the tools they need.
+### MCP Tools
 
-To use Atlassian tools directly (without an agent), enable them in your project's `opencode.json`:
+Atlassian and Playwright tools are **disabled by default** to save context. The included agents (`jira`, `docs`, `playwright`) automatically enable the tools they need.
+
+To use MCP tools directly (without an agent), enable them in your project's `opencode.json`:
 
 ```jsonc
 {
   "tools": {
-    "atlassian_*": true
+    "atlassian_*": true,
+    "playwright_*": true
   }
 }
 ```

@@ -28,12 +28,18 @@
       "url": "https://mcp.atlassian.com/v1/sse",
       "enabled": true,
       "oauth": {}
+    },
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "@playwright/mcp@latest"],
+      "enabled": true
     }
   },
 
-  // Disable Atlassian tools globally (agents re-enable as needed)
+  // Disable Atlassian and Playwright tools globally (agents re-enable as needed)
   "tools": {
-    "atlassian_*": false
+    "atlassian_*": false,
+    "playwright_*": false
   },
 
   // ---------------------------------------------------------------------------
