@@ -72,14 +72,14 @@
         "baseURL": "http://localhost:11434/v1"
       },
       "models": {
-        "granite-code:34b": {
-          "name": "Granite Code 34B"
+        "granite4:350m": {
+          "name": "Granite 4 350M"
         },
-        "granite3.2:2b": {
-          "name": "Granite 3.2 2B"
+        "granite4:1b": {
+          "name": "Granite 4 1B"
         },
-        "granite3.2:8b": {
-          "name": "Granite 3.2 8B"
+        "granite4:3b": {
+          "name": "Granite 4 3B"
         },
         "qwen2.5-coder:32b": {
           "name": "Qwen 2.5 Coder 32B"
