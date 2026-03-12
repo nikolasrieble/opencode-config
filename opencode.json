@@ -12,7 +12,7 @@
   // ---------------------------------------------------------------------------
   // Model Configuration - GitHub Copilot
   // ---------------------------------------------------------------------------
-  "model": "github-copilot/claude-opus-4.6",
+  "model": "github-copilot/gpt-5.4",
   // Using gpt-5-mini for lightweight tasks (title generation, etc.) - currently free via GitHub Copilot
   "small_model": "github-copilot/gpt-5-mini",
 
@@ -41,24 +41,7 @@
     "atlassian_*": false,
     "playwright_*": false
   },
-
-  // ---------------------------------------------------------------------------
-  // Agents are defined in the agents/ folder
-  // Copy agents/*.md to ~/.config/opencode/agents/
-  // ---------------------------------------------------------------------------
-
-  // ---------------------------------------------------------------------------
-  // Personal Preferences (engineers can customize these)
-  // ---------------------------------------------------------------------------
-  "theme": "catppuccin",
   "autoupdate": true,
-
-  "tui": {
-    "scroll_acceleration": {
-      "enabled": true
-    },
-    "diff_style": "auto"
-  },
 
   "compaction": {
     "auto": true,
@@ -66,5 +49,38 @@
     "reserved": 10000
   },
 
-  "share": "manual"
+  "share": "manual",
+
+  // ---------------------------------------------------------------------------
+  // Ollama Provider (local models for terraform-evals benchmarking)
+  // Routed through granite-bridge proxy (port 11435) which translates
+  // granite's <tool_call> text format into structured OpenAI tool_calls.
+  // Start the bridge: go run ./cmd/granite-bridge/ (from hashicorp-evals repo)
+  // ---------------------------------------------------------------------------
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local via granite-bridge)",
+      "options": {
+        "baseURL": "http://localhost:11435/v1"
+      },
+      "models": {
+        "granite-code:34b": {
+          "name": "Granite Code 34B"
+        },
+        "granite3.2:2b": {
+          "name": "Granite 3.2 2B"
+        },
+        "granite3.2:8b": {
+          "name": "Granite 3.2 8B"
+        },
+        "qwen2.5-coder:32b": {
+          "name": "Qwen 2.5 Coder 32B"
+        },
+        "devstral-small:24b": {
+          "name": "Devstral Small 24B"
+        }
+      }
+    }
+  }
 }
