@@ -81,6 +81,9 @@
         "granite4:3b": {
           "name": "Granite 4 3B"
         },
+        "granite4:32b-a9b-h": {
+          "name": "Granite 4 32B A9B H"
+        },
         "qwen2.5-coder:32b": {
           "name": "Qwen 2.5 Coder 32B"
         },
