@@ -52,10 +52,8 @@
   "share": "manual",
 
   // ---------------------------------------------------------------------------
-  // Ollama Provider (local models for terraform-evals benchmarking)
-  // Routed through granite-bridge proxy (port 11435) which translates
-  // granite's <tool_call> text format into structured OpenAI tool_calls.
-  // Start the bridge: go run ./cmd/granite-bridge/ (from hashicorp-evals repo)
+  // Ollama Provider (local models)
+  // Uses Ollama's OpenAI-compatible API on the default local port.
   // ---------------------------------------------------------------------------
   "provider": {
     "github-copilot": {
@@ -69,19 +67,19 @@
     },
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "Ollama (local via granite-bridge)",
+      "name": "Ollama (local)",
       "options": {
-        "baseURL": "http://localhost:11435/v1"
+        "baseURL": "http://localhost:11434/v1"
       },
       "models": {
-        "granite-code:34b": {
-          "name": "Granite Code 34B"
+        "granite4:350m": {
+          "name": "Granite 4 350M"
         },
-        "granite3.2:2b": {
-          "name": "Granite 3.2 2B"
+        "granite4:1b": {
+          "name": "Granite 4 1B"
         },
-        "granite3.2:8b": {
-          "name": "Granite 3.2 8B"
+        "granite4:3b": {
+          "name": "Granite 4 3B"
         },
         "qwen2.5-coder:32b": {
           "name": "Qwen 2.5 Coder 32B"
