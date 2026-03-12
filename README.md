@@ -19,7 +19,7 @@ This repo captures both. Everything here is project-independent. Project-specifi
 - **Review by first principles** - Code generation is project-specific. Review disciplines aren't — they're rooted in security, design, and testing fundamentals that transfer everywhere.
 - **Do not pollute the context** - Every token counts. We disable tools by default and keep instructions/rules/commands out of the global config.
 - **Agents over skills** - Skills are [unreliable](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals) (56% never invoked) and bloat context when they do load. Agents enable only the tools they need, nothing more.
-- **Best model by default, cheapest as fallback** - `gpt-5.4` for high-quality code and reasoning. `gpt-5-mini` (currently free via GitHub Copilot) for mundane tasks like title generation.
+- **Best model by default, cheapest as fallback** - `gpt-5.4` with xhigh reasoning effort for the best coding results. `gpt-5-mini` (currently free via GitHub Copilot) for mundane tasks like title generation.
 
 ### What This Repo Is Not
 
