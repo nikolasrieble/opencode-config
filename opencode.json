@@ -13,7 +13,7 @@
   // Model Configuration - GitHub Copilot
   // ---------------------------------------------------------------------------
   "model": "github-copilot/gpt-5.4",
-  // Using gpt-5-mini for lightweight tasks (title generation, etc.) - currently free via GitHub Copilot
+  // Default GPT-5.4 to xhigh reasoning effort; use gpt-5-mini for lightweight tasks
   "small_model": "github-copilot/gpt-5-mini",
 
   // ---------------------------------------------------------------------------
@@ -58,6 +58,15 @@
   // Start the bridge: go run ./cmd/granite-bridge/ (from hashicorp-evals repo)
   // ---------------------------------------------------------------------------
   "provider": {
+    "github-copilot": {
+      "models": {
+        "gpt-5.4": {
+          "options": {
+            "reasoningEffort": "xhigh"
+          }
+        }
+      }
+    },
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "Ollama (local via granite-bridge)",
