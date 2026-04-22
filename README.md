@@ -57,6 +57,20 @@ opencode mcp auth atlassian
 
 This opens a browser for OAuth authentication. Verify with `opencode mcp list` - you should see `✓ atlassian connected`.
 
+Install the IBM Slack MCP server:
+
+```bash
+uv tool install git+https://github.ibm.com/bob-garage/ibm-slack-mcp --python 3.12
+```
+
+If you prefer SSH and have GitHub Enterprise SSH access configured:
+
+```bash
+uv tool install git+ssh://git@github.ibm.com/bob-garage/ibm-slack-mcp --python 3.12
+```
+
+Before first use, sign in to `https://ibm.enterprise.slack.com` in Firefox, Chrome, Edge, or Safari. Verify with `opencode mcp list` - you should see `✓ slack connected`.
+
 ## Using Agents
 
 There are two ways to use agents:
@@ -94,10 +108,11 @@ The main agent will invoke the security agent as a subagent, then continue the c
 | `@human-review` | PR seam analysis and summary evaluation for reviewability | None |
 | `@ddd-evans` | Architecture review through Eric Evans' Domain-Driven Design | None |
 | `@playwright` | Browser automation — navigate, click, fill forms, take snapshots | `playwright_*: true` |
+| `@slack` | Search IBM Slack messages, threads, and channel history | `slack_*: true` |
 
 ### MCP Tools
 
-Atlassian and Playwright tools are **disabled by default** to save context. The included agents (`jira`, `docs`, `playwright`) automatically enable the tools they need.
+Atlassian, Playwright, and Slack tools are **disabled by default** to save context. The included agents (`jira`, `docs`, `playwright`, `slack`) automatically enable the tools they need.
 
 To use MCP tools directly (without an agent), enable them in your project's `opencode.json`:
 
@@ -105,10 +120,28 @@ To use MCP tools directly (without an agent), enable them in your project's `ope
 {
   "tools": {
     "atlassian_*": true,
-    "playwright_*": true
+    "playwright_*": true,
+    "slack_*": true
   }
 }
 ```
+
+### IBM Slack MCP Notes
+
+This repo only stores a credential-free Slack MCP configuration. Do not commit Slack tokens, cookies, browser exports, or machine-specific secrets here.
+
+The included `slack` MCP server runs the tool from the default `uv tool install` location at `{env:HOME}/.local/bin/ibm-slack-mcp`. This is still credential-free and only references the current user's home directory.
+
+The server supports automatic cookie harvesting from a signed-in browser, plus these optional environment variables if you need to override behavior locally:
+
+- `SLACK_TOKEN`
+- `SLACK_COOKIE`
+- `SLACK_BROWSER`
+- `SLACK_EXCLUDE_DMS`
+- `SLACK_EXCLUDE_PRIVATE_CHANNELS`
+- `SLACK_EXCLUDE_GROUP_DMS`
+- `SLACK_EXCLUDE_CHANNELS`
+- `SLACK_EXCLUDE_USERS`
 
 ## Customization
 

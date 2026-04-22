@@ -20,6 +20,11 @@
   // Atlassian MCP Server (Jira + Confluence)
   // Uses OAuth - will prompt for authentication on first use
   // Supports: https://<YOUR_ATLASSIAN_INSTANCE>.atlassian.net/
+  //
+  // IBM Slack MCP Server
+  // Install first: uv tool install git+https://github.ibm.com/bob-garage/ibm-slack-mcp --python 3.12
+  // Sign in to https://ibm.enterprise.slack.com in a supported browser before first use
+  // Keep any Slack credentials local only; do not store tokens or cookies in this shared config
   // ---------------------------------------------------------------------------
 
   "mcp": {
@@ -33,13 +38,19 @@
       "type": "local",
       "command": ["npx", "@playwright/mcp@latest"],
       "enabled": true
+    },
+    "slack": {
+      "type": "local",
+      "command": ["{env:HOME}/.local/bin/ibm-slack-mcp"],
+      "enabled": true
     }
   },
 
-  // Disable Atlassian and Playwright tools globally (agents re-enable as needed)
+  // Disable Atlassian, Playwright, and Slack tools globally (agents re-enable as needed)
   "tools": {
     "atlassian_*": false,
-    "playwright_*": false
+    "playwright_*": false,
+    "slack_*": false
   },
   "autoupdate": true,
 
