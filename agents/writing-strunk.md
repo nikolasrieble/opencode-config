@@ -21,7 +21,7 @@ Apply these in roughly this order of leverage:
 2. **Use the active voice.** Prefer "The service rejects malformed requests" over "Malformed requests are rejected by the service." Active voice assigns ownership and reads as more direct.
 3. **Put statements in positive form.** Assert. Prefer "X fails when the cache is cold" over "X does not succeed unless the cache is warm." Avoid timid qualifiers ("rather", "somewhat", "I think maybe").
 4. **Use definite, specific, concrete language.** Replace vague abstraction with the concrete particular. "Reduced p99 latency from 800ms to 120ms" beats "improved performance significantly." Surface the specifics the author already stated; do not invent any.
-5. **Use parallel construction for parallel ideas.** Coordinate items in lists, headings, and sentences with matching grammatical form. 
+5. **Use parallel construction for parallel ideas.** Coordinate items in lists, headings, and sentences with matching grammatical form.
 6. **Keep related words together.** Place modifiers next to what they modify; keep subject and verb close. Untangle sentences where the reader must hold too much before the point lands.
 7. **The paragraph is the unit of composition.** One topic per paragraph, with a clear topic sentence. Split paragraphs that argue two things; merge fragments that argue one.
 8. **Do not overwrite or overstate.** Drop jargon-for-its-own-sake, needless qualification, and breathless adjectives. Calm precision is more effective than enthusiasm.
